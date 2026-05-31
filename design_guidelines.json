@@ -1,0 +1,90 @@
+{
+  "project_context": {
+    "app_name": "Mon Exam",
+    "architecture": "Mobile-first PWA (React.js, Tailwind, Shadcn UI)",
+    "primary_audience": "African Students (Ivory Coast, Senegal, Mali, Burkina Faso)",
+    "core_vibe": "Secure, trustworthy, premium, frictionless",
+    "developer_instructions": "This is built as a mobile-first React web application. To enforce the mobile feel on desktop browsers, wrap the main router/app layout in a max-w-md centered container (e.g., `<div className=\"w-full max-w-md mx-auto min-h-screen shadow-2xl relative bg-slate-50 pb-20\">`)."
+  },
+  "theme": {
+    "mode": "light",
+    "archetype": "Swiss Brutalism + Authority (Clean, high-trust)",
+    "colors": {
+      "base": {
+        "background": "#F8FAFC",
+        "surface": "#FFFFFF",
+        "text_primary": "#0F172A",
+        "text_secondary": "#64748B",
+        "border": "#E2E8F0"
+      },
+      "brand": {
+        "primary": "#EA580C",
+        "primary_hover": "#C2410C",
+        "secondary": "#16A34A",
+        "accent": "#FBBF24"
+      },
+      "payment": {
+        "wave": "#1C449E",
+        "orange_money": "#FF7900"
+      },
+      "status": {
+        "error": "#EF4444",
+        "success": "#10B981",
+        "warning": "#F59E0B"
+      }
+    },
+    "typography": {
+      "heading_font": "Cabinet Grotesk, Outfit, sans-serif",
+      "body_font": "Work Sans, Satoshi, sans-serif",
+      "scales": {
+        "h1": "text-3xl font-black tracking-tighter text-slate-900",
+        "h2": "text-2xl font-bold tracking-tight text-slate-900",
+        "h3": "text-xl font-bold tracking-tight text-slate-900",
+        "body": "text-base font-medium text-slate-700",
+        "small": "text-sm font-medium text-slate-500",
+        "overline": "text-xs font-bold uppercase tracking-[0.2em] text-slate-400"
+      }
+    }
+  },
+  "layout_and_spacing": {
+    "container_wrapper": "w-full max-w-md mx-auto min-h-screen bg-slate-50 pb-20 relative overflow-x-hidden",
+    "padding_default": "p-4",
+    "border_radius": "rounded-2xl",
+    "shadows": {
+      "card": "shadow-sm",
+      "bottom_nav": "shadow-[0_-4px_20px_rgb(0,0,0,0.05)]"
+    }
+  },
+  "components": {
+    "button": "h-14 w-full rounded-xl font-bold text-lg flex items-center justify-center transition-all",
+    "card": "bg-white border border-slate-200 rounded-2xl p-4 flex flex-col gap-3",
+    "bottom_drawer": "Use Shadcn Drawer component (vaul) for mobile-native interactions like cart summary and checkout. Overrides dialog on mobile.",
+    "bottom_navigation": "Fixed at bottom (z-50), flex row items-center justify-around h-16 w-full max-w-md mx-auto glassmorphism (backdrop-blur-xl bg-white/90 border-t border-slate-200)",
+    "locked_subject": "Relative container. Base image uses CSS blur. Overlay with lock icon in absolute center. Price tag absolute top-right."
+  },
+  "screens": {
+    "country_selection": "Grid of 4 cards. Flag images. Generates anonymous session ID on select.",
+    "home_services": "List of 4 services. Cards with distinct icons. WhatsApp deep link button.",
+    "catalog": "Horizontal scroll tabs for Series (A1, D, F1, etc). Vertical list of subjects. Add to Cart buttons.",
+    "cart_checkout": "Single column guest-checkout flow. Summary of items. Payment method radio group (Wave/Orange Money). Sticky bottom 'Pay' button.",
+    "payment_pending": "Large red 5:00 countdown timer. Instructions for transfer (*133# or number). Input for TXN ID.",
+    "my_purchases": "Grid of unlocked subjects. Clear unblurred images. Download PDF buttons."
+  },
+  "animations": {
+    "page_transition": "Framer Motion: initial={{opacity: 0, x: 20}} animate={{opacity: 1, x: 0}} transition={{duration: 0.3}}",
+    "tap_feedback": "whileTap={{ scale: 0.96 }} on buttons and cards",
+    "timer_pulse": "animate-pulse on text-red-500 when time < 60s"
+  },
+  "media_assets": {
+    "mon_exam_logo": "https://static.prod-images.emergentagent.com/jobs/d0b759fb-ec8f-4a4a-af35-f406ac663945/images/e6d369a898255e10932ebe5c13386342fca7cb173ae91881bfa7746f78f31618.png",
+    "hero_background": "https://static.prod-images.emergentagent.com/jobs/d0b759fb-ec8f-4a4a-af35-f406ac663945/images/105acd154ffc0caae627fb6d2d59424587d0caaf002ca327723ad0e6fd8758dd.png",
+    "locked_exam_placeholder": "https://static.prod-images.emergentagent.com/jobs/d0b759fb-ec8f-4a4a-af35-f406ac663945/images/dfeb00c677484c2e46577180451430fbe47cc014dea39a37ddd2cd680147a555.png",
+    "premium_lock_icon": "https://static.prod-images.emergentagent.com/jobs/d0b759fb-ec8f-4a4a-af35-f406ac663945/images/cc09b85cfee3b4bd35eb76a59d127d39a4039d85e6ca1c524c0cd43fd11a764c.png",
+    "flags": {
+      "civ": "https://images.pexels.com/photos/7362498/pexels-photo-7362498.jpeg",
+      "senegal": "https://images.pexels.com/photos/14434228/pexels-photo-14434228.jpeg",
+      "mali_burkina_placeholder": "https://images.unsplash.com/photo-1570651403445-54c2b0f568c0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDZ8MHwxfHNlYXJjaHwyfHxzZW5lZ2FsJTIwZmxhZ3xlbnwwfHx8fDE3ODAyNjA4NDZ8MA&ixlib=rb-4.1.0&q=85"
+    }
+  },
+  "testing_rules": "All interactive and key informational elements MUST include a data-testid attribute in kebab-case."
+}
