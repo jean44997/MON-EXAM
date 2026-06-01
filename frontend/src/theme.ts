@@ -1,7 +1,31 @@
-// Shared theme constants for Mon Exam
-export const THEME = {
+// Mon Exam theme with dark mode support
+import { storage } from "@/src/utils/storage";
+
+export type Mode = "light" | "dark";
+
+export type Palette = {
+  bg: string;
+  surface: string;
+  surfaceAlt: string;
+  text: string;
+  textMuted: string;
+  border: string;
+  primary: string;
+  primaryDark: string;
+  secondary: string;
+  accent: string;
+  wave: string;
+  orange: string;
+  danger: string;
+  success: string;
+  warning: string;
+  overlay: string;
+};
+
+export const LIGHT: Palette = {
   bg: "#F8FAFC",
   surface: "#FFFFFF",
+  surfaceAlt: "#F1F5F9",
   text: "#0F172A",
   textMuted: "#64748B",
   border: "#E2E8F0",
@@ -14,21 +38,26 @@ export const THEME = {
   danger: "#EF4444",
   success: "#10B981",
   warning: "#F59E0B",
+  overlay: "rgba(15,23,42,0.55)",
 };
 
-export const FONTS = {
-  bold: "700" as const,
-  black: "900" as const,
-  semi: "600" as const,
-  medium: "500" as const,
-};
-
-export const RADIUS = {
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
-  pill: 999,
+export const DARK: Palette = {
+  bg: "#0B1220",
+  surface: "#111827",
+  surfaceAlt: "#1F2937",
+  text: "#F9FAFB",
+  textMuted: "#9CA3AF",
+  border: "#1F2937",
+  primary: "#FB923C",
+  primaryDark: "#EA580C",
+  secondary: "#34D399",
+  accent: "#FBBF24",
+  wave: "#3B82F6",
+  orange: "#FB923C",
+  danger: "#F87171",
+  success: "#34D399",
+  warning: "#FBBF24",
+  overlay: "rgba(0,0,0,0.7)",
 };
 
 export const COUNTRY_THEMES: Record<string, { primary: string; secondary: string; accent: string; gradient: [string, string] }> = {
@@ -37,3 +66,12 @@ export const COUNTRY_THEMES: Record<string, { primary: string; secondary: string
   bfa: { primary: "#EF2B2D", secondary: "#FCD116", accent: "#009E49", gradient: ["#EF2B2D", "#009E49"] },
   mli: { primary: "#14B53A", secondary: "#FCD116", accent: "#CE1126", gradient: ["#14B53A", "#CE1126"] },
 };
+
+export async function getMode(): Promise<Mode> {
+  const m = await storage.getItem<string>("theme_mode", "light");
+  return (m === "dark" ? "dark" : "light") as Mode;
+}
+
+export async function setMode(m: Mode) {
+  await storage.setItem("theme_mode", m);
+}

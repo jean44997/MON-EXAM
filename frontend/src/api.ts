@@ -1,3 +1,4 @@
+// Shared API client with dual-code security model
 import { storage } from "@/src/utils/storage";
 
 const BASE = process.env.EXPO_PUBLIC_BACKEND_URL || "";
@@ -32,9 +33,12 @@ export type AppConfig = {
   pricing: { single: number; pack5: number; exam: number; pack6: number };
 };
 
-export async function apiGet<T = any>(path: string): Promise<T> {
-  const res = await fetch(`${API}${path}`);
-  if (!res.ok) throw new Error(`GET ${path} failed: ${res.status}`);
+export async function apiGet<T = any>(path: string, headers: Record<string, string> = {}): Promise<T> {
+  const res = await fetch(`${API}${path}`, { headers });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || `GET ${path} failed: ${res.status}`);
+  }
   return res.json();
 }
 
@@ -47,6 +51,15 @@ export async function apiPost<T = any>(path: string, body: any, headers: Record<
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.detail || `POST ${path} failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function apiDelete<T = any>(path: string, headers: Record<string, string> = {}): Promise<T> {
+  const res = await fetch(`${API}${path}`, { method: "DELETE", headers });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || `DELETE ${path} failed: ${res.status}`);
   }
   return res.json();
 }
@@ -65,8 +78,19 @@ export async function setCountry(c: string) {
   await storage.setItem("country_code", c);
 }
 
-// Cart helpers
-export type CartItem = { subject_id: string; name: string; sub_series: string; series: string };
+// Admin session
+export async function getAdminSession(): Promise<string | null> {
+  return await storage.secureGet<string>("admin_session", "");
+}
+export async function setAdminSession(t: string) {
+  await storage.secureSet("admin_session", t);
+}
+export async function clearAdminSession() {
+  await storage.secureRemove("admin_session");
+}
+
+// Cart
+export type CartItem = { subject_id: string; name: string; sub_series: string; series: string; country: string };
 export async function getCart(): Promise<CartItem[]> {
   const raw = await storage.getItem<string>("cart", "[]");
   try {

@@ -1,44 +1,49 @@
-import { useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { useEffect, useRef } from "react";
+import { View, Text, StyleSheet, Animated, Easing } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { getUserId, getCountry } from "@/src/api";
-import { THEME } from "@/src/theme";
+import Logo from "@/src/components/Logo";
 
 export default function Index() {
   const router = useRouter();
+  const fade = useRef(new Animated.Value(0)).current;
+  const slide = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fade, { toValue: 1, duration: 700, useNativeDriver: true }),
+      Animated.timing(slide, { toValue: 0, duration: 700, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+    ]).start();
+
     (async () => {
       const uid = await getUserId();
       const country = await getCountry();
-      // Always regenerate session at start for security — clear stored id
-      // but keep country preference
       setTimeout(() => {
-        if (country && uid) {
-          router.replace("/services");
-        } else {
-          router.replace("/country");
-        }
-      }, 900);
+        if (country && uid) router.replace("/services");
+        else router.replace("/country");
+      }, 1500);
     })();
-  }, [router]);
+  }, [router, fade, slide]);
 
   return (
-    <LinearGradient colors={["#0F172A", "#1E293B"]} style={styles.container} testID="splash-screen">
-      <View style={styles.logoBox}>
+    <LinearGradient colors={["#0B1220", "#1E293B", "#0F172A"]} style={styles.container} testID="splash-screen">
+      <Animated.View style={{ opacity: fade, transform: [{ translateY: slide }], alignItems: "center" }}>
+        <Logo size="large" showName={false} />
         <Text style={styles.brand}>Mon Exam</Text>
         <Text style={styles.tag}>Réussite garantie · BAC 2026</Text>
-      </View>
-      <ActivityIndicator color={THEME.primary} size="small" style={{ marginTop: 32 }} />
+        <View style={styles.divider} />
+        <Text style={styles.country}>CIV · SÉN · BFA · MLI</Text>
+      </Animated.View>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: "center", justifyContent: "center" },
-  logoBox: { alignItems: "center" },
-  brand: { color: "#fff", fontSize: 40, fontWeight: "900", letterSpacing: -1 },
-  tag: { color: "#FBBF24", marginTop: 8, fontWeight: "600", letterSpacing: 2, fontSize: 12 },
+  brand: { color: "#fff", fontSize: 44, fontWeight: "900", letterSpacing: -1.5, marginTop: 24 },
+  tag: { color: "#FBBF24", marginTop: 8, fontWeight: "700", letterSpacing: 3, fontSize: 12 },
+  divider: { width: 60, height: 2, backgroundColor: "#EA580C", marginTop: 20, borderRadius: 2 },
+  country: { color: "#64748B", marginTop: 16, fontWeight: "600", letterSpacing: 4, fontSize: 11 },
 });
