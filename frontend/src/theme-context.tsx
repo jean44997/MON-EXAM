@@ -5,7 +5,7 @@ type Ctx = { palette: Palette; mode: Mode; toggle: () => void };
 const ThemeCtx = createContext<Ctx>({ palette: LIGHT, mode: "light", toggle: () => {} });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [mode, setM] = useState<Mode>("light");
+  const [mode, setM] = useState<Mode>("dark");
 
   useEffect(() => {
     getMode().then(setM);

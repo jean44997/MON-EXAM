@@ -1,0 +1,56 @@
+# Render Blueprint for Mon Exam
+# Auto-provisions: FastAPI backend + static PWA frontend
+# Deploy: Push to GitHub, then on render.com → New → Blueprint → Connect repo → Apply
+
+services:
+  # ===== Backend FastAPI =====
+  - type: web
+    name: mon-exam-api
+    runtime: python
+    region: frankfurt  # closest to Africa (or "oregon")
+    plan: free  # upgrade to "starter" for production ($7/mo, no sleep)
+    rootDir: backend
+    buildCommand: pip install --upgrade pip && pip install --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/ -r requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/
+    envVars:
+      - key: MONGO_URL
+        sync: false  # set manually in Render dashboard (MongoDB Atlas URI)
+      - key: DB_NAME
+        value: monexam
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: CORS_ORIGINS
+        value: "*"
+
+  # ===== Frontend PWA (Expo static export) =====
+  - type: web
+    name: mon-exam-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: yarn install --frozen-lockfile && yarn expo export --platform web --output-dir dist
+    staticPublishPath: ./dist
+    pullRequestPreviewsEnabled: true
+    envVars:
+      - key: EXPO_PUBLIC_BACKEND_URL
+        fromService:
+          type: web
+          name: mon-exam-api
+          property: hostport  # auto-injects https://mon-exam-api.onrender.com
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://mon-exam-api.onrender.com/api/*
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable

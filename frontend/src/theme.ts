@@ -68,8 +68,9 @@ export const COUNTRY_THEMES: Record<string, { primary: string; secondary: string
 };
 
 export async function getMode(): Promise<Mode> {
-  const m = await storage.getItem<string>("theme_mode", "light");
-  return (m === "dark" ? "dark" : "light") as Mode;
+  const m = await storage.getItem<string>("theme_mode", "dark");
+  // Default to dark when nothing stored
+  return (m === "light" ? "light" : "dark") as Mode;
 }
 
 export async function setMode(m: Mode) {
