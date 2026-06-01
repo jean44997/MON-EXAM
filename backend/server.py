@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Header
+from fastapi import FastAPI, APIRouter, HTTPException, Header, Request
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -600,11 +600,20 @@ async def delete_order(order_id: str, user_id: str):
 
 # ---------- Admin ----------
 @api_router.post("/admin/login")
-async def admin_login(body: AdminLogin):
-    check_admin_code(body.code)
-    # Issue ephemeral session token (signed-ish)
+async def admin_login(body: AdminLogin, request: Request):
+    ip = request.client.host if request.client else "unknown"
+    # Rate limit: max 5 attempts per IP per 10 minutes
+    window_start = now_utc() - timedelta(minutes=10)
+    attempts = await db.admin_attempts.count_documents({"ip": ip, "at": {"$gte": window_start}, "ok": False})
+    if attempts >= 5:
+        await db.admin_attempts.insert_one({"ip": ip, "at": now_utc(), "ok": False, "blocked": True})
+        raise HTTPException(status_code=429, detail="Trop de tentatives, réessayez dans 10 minutes.")
+    ok = body.code == ADMIN_CODE
+    await db.admin_attempts.insert_one({"ip": ip, "at": now_utc(), "ok": ok})
+    if not ok:
+        raise HTTPException(status_code=401, detail="Code admin incorrect")
     token = secrets.token_urlsafe(24)
-    await db.admin_sessions.insert_one({"token": token, "created_at": now_utc()})
+    await db.admin_sessions.insert_one({"token": token, "created_at": now_utc(), "ip": ip})
     return {"token": token}
 
 

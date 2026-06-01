@@ -1,27 +1,40 @@
 {
   "expo": {
-    "name": "frontend",
-    "slug": "frontend",
-    "version": "1.0.0",
+    "name": "Mon Exam",
+    "slug": "mon-exam",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "frontend",
+    "scheme": "monexam",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.monexam.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "com.monexam.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#000"
+        "backgroundColor": "#0F172A"
       },
       "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "name": "Mon Exam — BAC 2026",
+      "shortName": "Mon Exam",
+      "description": "Préparation au BAC en Côte d'Ivoire, Sénégal, Burkina Faso et Mali. Corrigés, sujets et services d'examen.",
+      "themeColor": "#EA580C",
+      "backgroundColor": "#0F172A",
+      "display": "standalone",
+      "orientation": "portrait",
+      "lang": "fr"
     },
     "plugins": [
       "expo-router",
@@ -29,12 +42,13 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "imageWidth": 220,
           "resizeMode": "contain",
-          "backgroundColor": "#000"
+          "backgroundColor": "#0F172A"
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true

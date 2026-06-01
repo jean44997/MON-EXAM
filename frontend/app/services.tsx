@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Linking,
   ActivityIndicator,
   Animated,
   Easing,
@@ -18,6 +17,7 @@ import { apiGet, getCountry, getUserId, type AppConfig } from "@/src/api";
 import { COUNTRY_THEMES } from "@/src/theme";
 import { useTheme } from "@/src/theme-context";
 import { storage } from "@/src/utils/storage";
+import { openWhatsApp } from "@/src/utils/whatsapp";
 import Logo from "@/src/components/Logo";
 
 const ICON_MAP: Record<string, any> = {
@@ -58,11 +58,8 @@ export default function ServicesScreen() {
 
   function pickService(id: string, svcMode: string) {
     storage.setItem("selected_service", id);
-    if (svcMode === "whatsapp" && config) {
-      const msg = encodeURIComponent(
-        `Bonjour, je viens du site Mon Exam. Mon ID: ${uid}. Je suis intéressé par le service: ${id}.`,
-      );
-      Linking.openURL(`${config.whatsapp_link}?text=${msg}`).catch(() => {});
+    if (svcMode === "whatsapp") {
+      openWhatsApp({ userId: uid, countryCode: country, service: id }, "general");
       return;
     }
     router.push("/catalog");

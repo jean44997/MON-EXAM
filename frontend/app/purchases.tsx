@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
-  Linking,
   Alert,
 } from "react-native";
 import { useRouter, useFocusEffect } from "expo-router";
@@ -16,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { apiGet, apiDelete, getCountry, getUserId } from "@/src/api";
 import { COUNTRY_THEMES } from "@/src/theme";
 import { useTheme } from "@/src/theme-context";
+import { openWhatsApp } from "@/src/utils/whatsapp";
 
 const STATUS_INFO: Record<string, { text: string; color: string; icon: string }> = {
   paid: { text: "Débloqué", color: "#10B981", icon: "checkmark-circle" },
@@ -46,11 +46,20 @@ export default function PurchasesScreen() {
 
   const theme = COUNTRY_THEMES[country] || COUNTRY_THEMES.civ;
 
-  function openWhatsApp(o: any) {
-    const msg = encodeURIComponent(
-      `Bonjour, commande ${o.order_id} sur Mon Exam. Code: ${o.activation_code}. Merci de m'envoyer les corrigés.`,
+  function openWA(o: any) {
+    const intent = o.status === "paid" ? "after-payment" : o.status === "refused" ? "support" : "general";
+    openWhatsApp(
+      {
+        userId: o.user_id,
+        countryCode: country,
+        service: o.service,
+        orderId: o.order_id,
+        activationCode: o.activation_code,
+        amount: o.amount,
+        phone: o.phone,
+      },
+      intent,
     );
-    Linking.openURL(`https://wa.me/2250545019493?text=${msg}`).catch(() => {});
   }
 
   async function deleteOrder(o: any) {
@@ -143,7 +152,7 @@ export default function PurchasesScreen() {
                       <Ionicons name="trash" size={14} color={palette.danger} />
                     </TouchableOpacity>
                   )}
-                  <TouchableOpacity testID={`wa-${o.order_id}`} onPress={() => openWhatsApp(o)} style={styles.waBtn}>
+                  <TouchableOpacity testID={`wa-${o.order_id}`} onPress={() => openWA(o)} style={styles.waBtn}>
                     <Ionicons name="logo-whatsapp" size={16} color="#fff" />
                     <Text style={styles.waText}>Contact</Text>
                   </TouchableOpacity>

@@ -8,8 +8,10 @@ import Logo from "@/src/components/Logo";
 
 export default function Index() {
   const router = useRouter();
-  const fade = useRef(new Animated.Value(0)).current;
-  const slide = useRef(new Animated.Value(20)).current;
+  const fadeRef = useRef(new Animated.Value(0));
+  const slideRef = useRef(new Animated.Value(20));
+  const fade = fadeRef.current;
+  const slide = slideRef.current;
 
   useEffect(() => {
     Animated.parallel([

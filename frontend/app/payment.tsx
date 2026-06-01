@@ -17,6 +17,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { apiGet, apiPost, clearCart, getCountry, getUserId, type AppConfig } from "@/src/api";
 import { COUNTRY_THEMES } from "@/src/theme";
 import { useTheme } from "@/src/theme-context";
+import { openWhatsApp } from "@/src/utils/whatsapp";
 
 export default function PaymentScreen() {
   const router = useRouter();
@@ -100,12 +101,20 @@ export default function PaymentScreen() {
     }
   }
 
-  function openWhatsApp() {
-    if (!config || !order) return;
-    const msg = encodeURIComponent(
-      `Bonjour, je viens de payer (commande ${order.order_id}) sur Mon Exam. Mon code: ${order.activation_code}. Merci de me transmettre l'accès.`,
+  function openWA() {
+    if (!order) return;
+    openWhatsApp(
+      {
+        userId: order.user_id,
+        countryCode: country,
+        service: order.service,
+        orderId: order.order_id,
+        activationCode: order.activation_code,
+        amount: order.amount,
+        phone: order.phone,
+      },
+      "after-payment",
     );
-    Linking.openURL(`${config.whatsapp_link}?text=${msg}`).catch(() => {});
   }
 
   if (!order) {
@@ -197,7 +206,7 @@ export default function PaymentScreen() {
           <Text style={styles.confirmText}>{submitting ? "..." : "Confirmer le paiement"}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity testID="whatsapp-btn" activeOpacity={0.85} onPress={openWhatsApp} style={[styles.waBtn, { backgroundColor: palette.surface }]}>
+        <TouchableOpacity testID="whatsapp-btn" activeOpacity={0.85} onPress={openWA} style={[styles.waBtn, { backgroundColor: palette.surface }]}>
           <Ionicons name="logo-whatsapp" size={20} color="#25D366" />
           <Text style={styles.waText}>Discuter sur WhatsApp</Text>
         </TouchableOpacity>
