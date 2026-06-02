@@ -9,7 +9,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "build": "expo export",
+    "build": "expo export && node -e \"const fs=require('fs');const p=require('path');['manifest.json','sw.js','icon.png','favicon.png'].forEach(f=>{const s=p.join('public',f);const d=p.join('dist',f);if(fs.existsSync(s)){fs.copyFileSync(s,d);console.log('Copied',f)}})\"",
     "lint": "expo lint"
   },
   "dependencies": {
