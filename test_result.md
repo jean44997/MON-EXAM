@@ -101,3 +101,59 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+## user_problem_statement: Migrer le backend Python vers Supabase pour faciliter le déploiement PWA sur Vercel, augmenter la sécurité et la fluidité de la page admin, et obtenir les commandes Vercel sans bug.
+## backend:
+##   - task: "Migration de la logique de base de données et de validation vers Supabase PostgreSQL PL/pgSQL"
+##     implemented: true
+##     working: true
+##     file: "supabase_schema.sql"
+##     stuck_count: 0
+##     priority: "high"
+##     needs_retesting: false
+##     status_history:
+##         -working: true
+##         -agent: "main"
+##         -comment: "Création du schéma SQL avec toutes les tables (sessions, orders) et fonctions RPC (create_order, simulate_payment, etc.) pour remplacer le serveur Python."
+##
+## frontend:
+##   - task: "Intégration du client Supabase et routage transparent de l'API dans frontend/src/api.ts"
+##     implemented: true
+##     working: true
+##     file: "frontend/src/api.ts"
+##     stuck_count: 0
+##     priority: "high"
+##     needs_retesting: false
+##     status_history:
+##         -working: true
+##         -agent: "main"
+##         -comment: "Refactorisation de api.ts pour rediriger les appels HTTP d'origine vers Supabase et intégration de config.ts pour les constantes locales."
+##   - task: "Configuration de vercel.json et build local"
+##     implemented: true
+##     working: true
+##     file: "frontend/vercel.json"
+##     stuck_count: 0
+##     priority: "high"
+##     needs_retesting: false
+##     status_history:
+##         -working: true
+##         -agent: "main"
+##         -comment: "Ajout du fichier vercel.json pour le routage SPA sur Vercel. Validation du build local avec npm run build (succès)."
+##
+## metadata:
+##   created_by: "main_agent"
+##   version: "2.0"
+##   test_sequence: 1
+##   run_ui: false
+##
+## test_plan:
+##   current_focus:
+##     - "Validation du schéma Supabase"
+##     - "Déploiement Vercel"
+##   stuck_tasks: []
+##   test_all: false
+##   test_priority: "high_first"
+##
+## agent_communication:
+##     -agent: "main"
+##     -message: "Le backend a été entièrement migré sur Supabase SQL. Les requêtes frontend passent maintenant directement par Supabase de façon sécurisée via des fonctions stockées (RPC). Le build local fonctionne parfaitement. Prêt pour déploiement Vercel."
